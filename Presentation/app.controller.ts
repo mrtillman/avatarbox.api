@@ -1,8 +1,7 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Request } from 'express';
-
-import { writeFile } from 'fs';
+import { AvbxGravatarClient } from 'avatarbox.sdk';
 
 @Controller()
 export class AppController {
@@ -14,11 +13,14 @@ export class AppController {
   }
 
   @Get('/hello')
-  getHello(@Req() req: Request): string {
+  async getHello(@Req() req: Request): Promise<any[]> {
     const _req = (req as any);
     const user = _req.raw.user;
     const id = user.sub.split('|').pop();
-    console.log(id);
-    return this.appService.getHello();
+    var client = new AvbxGravatarClient();
+    var gravatar = await client.fetch(id);
+    var result = await gravatar.userImages();
+    return result.userImages;
+    //return this.appService.getHello();
   }
 }
