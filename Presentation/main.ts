@@ -10,6 +10,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter()
   );
+  app.enableCors();
   await app.listen(8081);
 }
 bootstrap();
