@@ -15,11 +15,10 @@ export class AppController {
 
   @Get('/hello')
   getHello(@Req() req: Request): string {
-    const context = (req as any).context;
-    const text = Buffer.from(JSON.stringify(context));
-    writeFile('./requestContext.txt', text.toString(), (err)=>{
-      if(err) console.log(err);
-    });
+    const _req = (req as any);
+    const user = _req.raw.user;
+    const id = user.sub.split('|').pop();
+    console.log(id);
     return this.appService.getHello();
   }
 }
