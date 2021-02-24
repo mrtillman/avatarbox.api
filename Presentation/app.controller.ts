@@ -1,5 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Request } from 'express';
+
+import { writeFile } from 'fs';
 
 @Controller()
 export class AppController {
@@ -11,7 +14,12 @@ export class AppController {
   }
 
   @Get('/hello')
-  getHello(): string {
+  getHello(@Req() req: Request): string {
+    const context = (req as any).context;
+    const text = Buffer.from(JSON.stringify(context));
+    writeFile('./requestContext.txt', text.toString(), (err)=>{
+      if(err) console.log(err);
+    });
     return this.appService.getHello();
   }
 }
