@@ -4,6 +4,13 @@ rest api for [avatarbox.io](https://avatarbox.io)
 
 ---
 
+## Checklist
+
+- IAM Role: `APIBackendRole`
+  - AmazonDynamoDBFullAccess
+- KMS Symmetric Key
+  - add `APIBackendRole` as a Key user
+
 ## Installation
 
 ```bash
