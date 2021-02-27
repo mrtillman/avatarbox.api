@@ -4,11 +4,12 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { AppModule } from './app.module';
+import { GravatarModule } from './gravatar/gravatar.module';
+import { MainModule } from './main.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
+    MainModule,
     new FastifyAdapter(),
   );
 
