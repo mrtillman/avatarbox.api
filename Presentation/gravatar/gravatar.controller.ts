@@ -22,7 +22,7 @@ export class GravatarController {
     for(const key in req.raw.files){
       const file = req.raw.files[key];
       const fileName = guid();
-      const ext = file.mimetype.split(file.mimetype.indexOf('/') + 1);
+      const ext = file.mimetype.substring(file.mimetype.indexOf('/') + 1);
       const path = `./uploads/${fileName}.${ext}`;
       file.mv(path, () => {
         client.saveImage(path, imageRating.value);
