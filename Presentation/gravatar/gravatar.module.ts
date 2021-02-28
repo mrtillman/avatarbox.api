@@ -15,7 +15,8 @@ export class GravatarModule implements NestModule {
     consumer
       .apply(JwtMiddleware).forRoutes(imagesRoute)
       .apply(GravatarMiddleware).forRoutes(
-        { path: imagesRoute, method: RequestMethod.GET }
+        { path: imagesRoute, method: RequestMethod.GET },
+        { path: imagesRoute, method: RequestMethod.POST }
       );
   }
 }

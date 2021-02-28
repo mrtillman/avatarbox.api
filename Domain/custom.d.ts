@@ -3,5 +3,6 @@ declare namespace Express {
     user?: any,
     raw?: any,
     gravatar?: any
+    imageRating?: number
   }
 }
