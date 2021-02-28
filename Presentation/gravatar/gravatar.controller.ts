@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { GravatarClient, ImageRating } from 'avatarbox.sdk';
 import { Request, Response } from 'express';
-import { v4 as guid } from 'uuid';
 import { ValueRange } from '../../Common/value-range';
+import { BaseController } from '../base.controller';
 
 export const route = {
   test: "gravatar/test",
@@ -11,8 +11,10 @@ export const route = {
 }
 
 @Controller('gravatar')
-export class GravatarController {
-  constructor() {}
+export class GravatarController extends BaseController {
+  constructor() {
+    super();
+  }
 
   @Get('/exists')
   async exists(@Req() req: Request): Promise<any> {
@@ -29,20 +31,11 @@ export class GravatarController {
   }
 
   @Post('/images')
-  async postImages(@Req() req: Request, @Res() res: Response): Promise<any> {
+  async postImages(@Req() req: Request): Promise<any> {
     const imageRating = new ValueRange(0, 3, req.body.imageRating);
     const client = req.raw.gravatar as GravatarClient;
-    for(const key in req.raw.files){
-      const file = req.raw.files[key];
-      const fileName = guid();
-      const ext = file.mimetype.substring(file.mimetype.indexOf('/') + 1);
-      const path = `./uploads/${fileName}.${ext}`;
-      file.mv(path, () => {
-        client.saveImage(path, imageRating.value);
-        res.send();
-      });
-      break;
-    }
+    const path = await this.uploadFile(req.raw.files);
+    return client.saveImage(path, imageRating.value);
   }
 
   @Get('/test')
