@@ -32,30 +32,33 @@ export class GravatarController extends BaseController {
   }
 
   @Post('/images')
-  async postImages(@Req() req: Request): Promise<any> {
+  async postImages(@Req() req: Request, @Res() res: Response): Promise<any> {
     const imageRating = new ValueRange(0, 3, req.body.imageRating);
     const client = req.raw.gravatar as GravatarClient;
-    const path = await this.uploadFile(req.raw.files);
-    const result = await client.saveImage(path, imageRating.value);
-    return {
-      imageName: result.imageName,
-    };
-  }
-
-  @Post('/images/:imageUrl')
-  async postImageUrl(@Req() req: Request, @Res() res: Response): Promise<any> {
-    const { imageUrl } = req.params;
-    const imageRating = new ValueRange(0, 3, req.body.imageRating);
-    const client = req.raw.gravatar as GravatarClient;
-    try {
-      const result = await client.saveImageUrl(imageUrl, imageRating.value);
+    if(req.body.imageUrl) {
+      const { imageUrl } = req.body;
+      try {
+        const result = await client.saveImageUrl(imageUrl, imageRating.value);
+        res.send({
+          imageName: result.imageName,
+        });
+      } catch (error) {
+        const message = `Could not upload image from url: "${imageUrl}".`;
+        res.status(400).send(message);
+      }
+    } else if(req.body.imageData) {
+      const result = await client.saveEncodedImage(req.body.imageData, imageRating.value);
       res.send({
         imageName: result.imageName,
       });
-    } catch (error) {
-      const message = `Could not upload image from url: "${imageUrl}".`;
-      res.status(400).send(message);
+    } else if(req.raw.files) {
+      const path = await this.uploadFile(req.raw.files);
+      const result = await client.saveImage(path, imageRating.value);
+      res.send({
+        imageName: result.imageName,
+      });
     }
+    res.status(204).send();
   }
 
   @Get('/test')
