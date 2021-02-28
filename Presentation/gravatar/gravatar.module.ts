@@ -3,6 +3,7 @@ import { Module, NestModule } from '@nestjs/common';
 import { GravatarController } from './gravatar.controller';
 import { GravatarMiddleware } from './gravatar.middleware';
 import { JwtMiddleware } from '../jwt.middleware';
+import { route } from './gravatar.controller';
 
 @Module({
   imports: [],
@@ -11,12 +12,17 @@ import { JwtMiddleware } from '../jwt.middleware';
 })
 export class GravatarModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    const imagesRoute = "gravatar/images";
     consumer
-      .apply(JwtMiddleware).forRoutes(imagesRoute)
+      .apply(JwtMiddleware).forRoutes(
+        route.exists,
+        route.images,
+        route.test
+      )
       .apply(GravatarMiddleware).forRoutes(
-        { path: imagesRoute, method: RequestMethod.GET },
-        { path: imagesRoute, method: RequestMethod.POST }
+        { path: route.exists, method: RequestMethod.GET },
+        { path: route.images, method: RequestMethod.GET },
+        { path: route.images, method: RequestMethod.POST },
+        { path: route.test, method: RequestMethod.GET }
       );
   }
 }

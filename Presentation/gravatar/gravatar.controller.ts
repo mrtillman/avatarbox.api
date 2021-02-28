@@ -4,9 +4,22 @@ import { Request, Response } from 'express';
 import { v4 as guid } from 'uuid';
 import { ValueRange } from '../../Common/value-range';
 
+export const route = {
+  test: "gravatar/test",
+  images: "gravatar/images",
+  exists: "gravatar/exists"
+}
+
 @Controller('gravatar')
 export class GravatarController {
   constructor() {}
+
+  @Get('/exists')
+  async exists(@Req() req: Request): Promise<any> {
+    const client = req.raw.gravatar as GravatarClient;
+    const result = await client.exists();
+    return { success: result.success };
+  }
 
   @Get('/images')
   async getImages(@Req() req: Request): Promise<any> {
@@ -30,5 +43,12 @@ export class GravatarController {
       });
       break;
     }
+  }
+
+  @Get('/test')
+  async test(@Req() req: Request): Promise<any> {
+    const client = req.raw.gravatar as GravatarClient;
+    const result = await client.test();
+    return { response: result.response };
   }
 }
