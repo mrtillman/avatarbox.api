@@ -35,7 +35,10 @@ export class GravatarController extends BaseController {
     const imageRating = new ValueRange(0, 3, req.body.imageRating);
     const client = req.raw.gravatar as GravatarClient;
     const path = await this.uploadFile(req.raw.files);
-    return client.saveImage(path, imageRating.value);
+    const result = await client.saveImage(path, imageRating.value);
+    return {
+      imageName: result.imageName,
+    };
   }
 
   @Get('/test')
