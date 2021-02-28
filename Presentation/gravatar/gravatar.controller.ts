@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
-import { GravatarClient, ImageRating } from 'avatarbox.sdk';
+import { GravatarClient } from 'avatarbox.sdk';
 import { Request, Response } from 'express';
 import { ValueRange } from '../../Common/value-range';
 import { BaseController } from '../base.controller';
@@ -7,6 +7,7 @@ import { BaseController } from '../base.controller';
 export const route = {
   test: "gravatar/test",
   images: "gravatar/images",
+  imageUrl: "gravatar/images/:imageUrl",
   exists: "gravatar/exists"
 }
 
@@ -39,6 +40,22 @@ export class GravatarController extends BaseController {
     return {
       imageName: result.imageName,
     };
+  }
+
+  @Post('/images/:imageUrl')
+  async postImageUrl(@Req() req: Request, @Res() res: Response): Promise<any> {
+    const { imageUrl } = req.params;
+    const imageRating = new ValueRange(0, 3, req.body.imageRating);
+    const client = req.raw.gravatar as GravatarClient;
+    try {
+      const result = await client.saveImageUrl(imageUrl,imageRating.value);  
+      res.send({
+        imageName: result.imageName
+      });
+    } catch (error) {
+      const message = `Could not upload image from url: "${imageUrl}".`;
+      res.status(400).send(message);
+    }
   }
 
   @Get('/test')
