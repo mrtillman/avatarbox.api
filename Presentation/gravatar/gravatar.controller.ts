@@ -5,11 +5,11 @@ import { ValueRange } from '../../Common/value-range';
 import { BaseController } from '../base.controller';
 
 export const route = {
-  test: "gravatar/test",
-  images: "gravatar/images",
-  imageUrl: "gravatar/images/:imageUrl",
-  exists: "gravatar/exists"
-}
+  test: 'gravatar/test',
+  images: 'gravatar/images',
+  imageUrl: 'gravatar/images/:imageUrl',
+  exists: 'gravatar/exists',
+};
 
 @Controller('gravatar')
 export class GravatarController extends BaseController {
@@ -48,9 +48,9 @@ export class GravatarController extends BaseController {
     const imageRating = new ValueRange(0, 3, req.body.imageRating);
     const client = req.raw.gravatar as GravatarClient;
     try {
-      const result = await client.saveImageUrl(imageUrl,imageRating.value);  
+      const result = await client.saveImageUrl(imageUrl, imageRating.value);
       res.send({
-        imageName: result.imageName
+        imageName: result.imageName,
       });
     } catch (error) {
       const message = `Could not upload image from url: "${imageUrl}".`;

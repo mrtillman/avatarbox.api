@@ -17,5 +17,4 @@ describe('GravatarController', () => {
       expect(true).toBe(true);
     });
   });
-
 });

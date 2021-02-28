@@ -7,6 +7,6 @@ export class MainController {
 
   @Get('/')
   getHome(@Req() req: Request): string {
-    return "let there be light";
+    return 'let there be light';
   }
 }

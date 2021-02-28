@@ -7,7 +7,7 @@ export class BaseController {
 
   async uploadFile(files: any): Promise<string> {
     return new Promise((resolve) => {
-      for(const key in files){
+      for (const key in files) {
         const file = files[key];
         const fileName = guid();
         const ext = file.mimetype.substring(file.mimetype.indexOf('/') + 1);
@@ -17,6 +17,6 @@ export class BaseController {
         });
         break;
       }
-    })
+    });
   }
 }

@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class GravatarMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
-    if(!req.user) next();
+    if (!req.user) next();
     const { user } = req;
     const userId = user.sub.substring(user.sub.indexOf('|') + 1);
     const client = new AvbxGravatarClient();

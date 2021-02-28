@@ -21,5 +21,4 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('let there be light');
   });
-
 });
