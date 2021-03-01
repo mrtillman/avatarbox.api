@@ -12,16 +12,19 @@ import { route } from './gravatar.controller';
 })
 export class GravatarModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    const routes = [
+      { path: route.test, method: RequestMethod.GET },
+      { path: route.exists, method: RequestMethod.GET },
+      { path: route.images, method: RequestMethod.GET },
+      { path: route.images, method: RequestMethod.POST },
+      { path: `${route.root}/:imageName`, method: RequestMethod.PUT },
+      { path: route.root, method: RequestMethod.DELETE },
+      { path: `${route.images}/:imageName`, method: RequestMethod.DELETE },
+    ];
     consumer
       .apply(JwtMiddleware)
-      .forRoutes(route.exists, route.images, route.imageUrl, route.test)
+      .forRoutes(...routes)
       .apply(GravatarMiddleware)
-      .forRoutes(
-        { path: route.exists, method: RequestMethod.GET },
-        { path: route.images, method: RequestMethod.GET },
-        { path: route.images, method: RequestMethod.POST },
-        { path: route.imageUrl, method: RequestMethod.POST },
-        { path: route.test, method: RequestMethod.GET },
-      );
+      .forRoutes(...routes);
   }
 }

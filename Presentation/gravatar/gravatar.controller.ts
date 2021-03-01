@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Controller, Delete, Put, Get, Post, Req, Res } from '@nestjs/common';
 import { GravatarClient } from 'avatarbox.sdk';
 import { ImageProcessor } from 'Common/image-processor';
 import { ImageProcessorFactory } from 'Common/image-processor-factory';
@@ -7,16 +7,33 @@ import { ValueRange } from '../../Common/value-range';
 import { BaseController } from '../base.controller';
 
 export const route = {
-  test: 'gravatar/test',
-  images: 'gravatar/images',
-  imageUrl: 'gravatar/images/:imageUrl',
+  root: 'gravatar',
   exists: 'gravatar/exists',
+  images: 'gravatar/images',
+  test: 'gravatar/test',
 };
 
 @Controller('gravatar')
 export class GravatarController extends BaseController {
   constructor() {
     super();
+  }
+
+  @Delete('/')
+  removePrimaryImage(@Req() req: Request, @Res() res: Response){
+    const client = req.raw.gravatar as GravatarClient;
+    client.removeImage()
+      .then(result => res.send({ success: result.success }))
+      .catch((err) => res.status(400).send(err.message));
+  }
+
+  @Put('/:imageName')
+  setPrimaryImage(@Req() req: Request, @Res() res: Response){
+    const { imageName } = req.params;
+    const client = req.raw.gravatar as GravatarClient;
+    client.useUserImage(imageName)
+      .then(result => res.send({ success: result.success }))
+      .catch((err) => res.status(400).send(err.message));
   }
 
   @Get('/exists')
@@ -56,7 +73,16 @@ export class GravatarController extends BaseController {
     processor
       .process()
       .then((imageName) => res.send({ imageName }))
-      .catch((message) => res.status(400).send(message));
+      .catch((err) => res.status(400).send(err.message));
+  }
+
+  @Delete('/images/:imageName')
+  deleteImage(@Req() req: Request, @Res() res: Response){
+    const { imageName } = req.params;
+    const client = req.raw.gravatar as GravatarClient;
+    client.deleteUserImage(imageName)
+      .then(result => res.send({ success: result.success }))
+      .catch((err) => res.status(400).send(err.message));
   }
 
   @Get('/test')
