@@ -10,11 +10,7 @@ export class ImageDataProcessor implements ImageProcessor {
     this.imageData = imageData;
   }
   async process(): Promise<string>{
-    try {
-      const result = await this.client.saveEncodedImage(this.imageData, this.imageRating);
-      return result.imageName;
-    } catch {
-      throw "Could not upload image data.";
-    }
+    const result = await this.client.saveEncodedImage(this.imageData, this.imageRating);
+    return result.imageName;
   }
 }

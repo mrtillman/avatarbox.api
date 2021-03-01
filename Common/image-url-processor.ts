@@ -10,11 +10,7 @@ export class ImageUrlProcessor implements ImageProcessor {
     this.imageUrl = imageUrl;
   }
   async process(): Promise<string>{
-    try {
-      const result = await this.client.saveImageUrl(this.imageUrl, this.imageRating);
-      return result.imageName;
-    } catch {
-      throw `Could not upload image from url: "${this.imageUrl}".`;
-    }
+    const result = await this.client.saveImageUrl(this.imageUrl, this.imageRating);
+    return result.imageName;
   }
 }

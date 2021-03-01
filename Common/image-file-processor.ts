@@ -10,11 +10,7 @@ export class ImageFileProcessor implements ImageProcessor {
     this.imageFilePath = imageFilePath;
   }
   async process(): Promise<string>{
-    try {
-      const result = await this.client.saveImage(this.imageFilePath, this.imageRating);
-      return result.imageName;
-    } catch {
-      throw 'Image upload failed';
-    }
+    const result = await this.client.saveImage(this.imageFilePath, this.imageRating);
+    return result.imageName;
   }
 }
