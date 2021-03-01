@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { GravatarClient } from 'avatarbox.sdk';
+import { ImageProcessor } from 'Common/image-processor';
+import { ImageProcessorFactory } from 'Common/image-processor-factory';
 import { Request, Response } from 'express';
 import { ValueRange } from '../../Common/value-range';
 import { BaseController } from '../base.controller';
@@ -33,32 +35,28 @@ export class GravatarController extends BaseController {
 
   @Post('/images')
   async postImages(@Req() req: Request, @Res() res: Response): Promise<any> {
-    const imageRating = new ValueRange(0, 3, req.body.imageRating);
-    const client = req.raw.gravatar as GravatarClient;
-    if(req.body.imageUrl) {
-      const { imageUrl } = req.body;
-      try {
-        const result = await client.saveImageUrl(imageUrl, imageRating.value);
-        res.send({
-          imageName: result.imageName,
-        });
-      } catch (error) {
-        const message = `Could not upload image from url: "${imageUrl}".`;
-        res.status(400).send(message);
-      }
-    } else if(req.body.imageData) {
-      const result = await client.saveEncodedImage(req.body.imageData, imageRating.value);
-      res.send({
-        imageName: result.imageName,
-      });
-    } else if(req.raw.files) {
-      const path = await this.uploadFile(req.raw.files);
-      const result = await client.saveImage(path, imageRating.value);
-      res.send({
-        imageName: result.imageName,
-      });
+    const factory = new ImageProcessorFactory();
+    let processor: ImageProcessor;
+
+    if (req.body && req.body.imageUrl) {
+      processor = factory.createUrlProcessor(req.body.imageUrl);
+    } else if (req.body && req.body.imageData) {
+      processor = factory.createDataProcessor(req.body.imageData);
+    } else if (req.raw.files) {
+      const imageFilePath = await this.uploadFile(req.raw.files);
+      processor = factory.createFileProcessor(imageFilePath);
+    } else {
+      return res.status(204).send();
     }
-    res.status(204).send();
+
+    const imageRating = new ValueRange(0, 3, req.body.imageRating);
+    processor.imageRating = imageRating.value;
+    processor.client = req.raw.gravatar as GravatarClient;
+
+    processor
+      .process()
+      .then((imageName) => res.send({ imageName }))
+      .catch((message) => res.status(400).send(message));
   }
 
   @Get('/test')
