@@ -8,6 +8,7 @@ import { BaseController } from '../base.controller';
 
 export const route = {
   root: 'gravatar',
+  addresses: 'gravatar/addresses',
   exists: 'gravatar/exists',
   images: 'gravatar/images',
   test: 'gravatar/test',
@@ -31,9 +32,22 @@ export class GravatarController extends BaseController {
   setPrimaryImage(@Req() req: Request, @Res() res: Response){
     const { imageName } = req.params;
     const client = req.raw.gravatar as GravatarClient;
-    client.useUserImage(imageName)
+    let promise: Promise<any>;
+    if(req.body && req.body.addresses && req.body.addresses.length){
+      promise = client.useUserImage(imageName, ...req.body.addresses);
+    } else {
+      promise = client.useUserImage(imageName);
+    }
+    promise
       .then(result => res.send({ success: result.success }))
       .catch((err) => res.status(400).send(err.message));
+  }
+
+  @Get('/addresses')
+  async addresses(@Req() req: Request): Promise<any> {
+    const client = req.raw.gravatar as GravatarClient;
+    const result = await client.addresses();
+    return result.userAddresses;
   }
 
   @Get('/exists')
