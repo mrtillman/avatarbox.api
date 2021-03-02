@@ -1,11 +1,13 @@
-import { Controller, Get, Req } from '@nestjs/common';
-import { AvbxGravatarClient } from 'avatarbox.sdk';
+import { Controller, Get, Post, Req } from '@nestjs/common';
+import { AvbxGravatarClient, GravatarClient } from 'avatarbox.sdk';
 import { Request } from 'express';
 
 export const route = {
   collect: 'collect',
   dig: 'dig',
-  peek: 'peek'
+  on: 'on',
+  off: 'off',
+  peek: 'peek',
 };
 
 @Controller()
@@ -15,20 +17,32 @@ export class MainController {
   constructor() {
     this.client = new AvbxGravatarClient();
   }
+  
+  @Post('on')
+  async on(@Req() req: Request): Promise<any> {
+    const client = req.raw.gravatar as GravatarClient;
+    return await this.client.on(client.email);
+  }
+
+  @Post('off')
+  async off(@Req() req: Request): Promise<any> {
+    const client = req.raw.gravatar as GravatarClient;
+    return await this.client.off(client.email);
+  }
 
   @Get('collect')
-  async collect(@Req() req: Request): Promise<any> {
-    return await this.client.collect();
+  async collect(): Promise<any> {
+    return await this.client.collect() || [];
   }
 
   @Get('dig')
   async dig(@Req() req: Request): Promise<any> {
-    return await this.client.dig();
+    return await this.client.dig() || [];
   }
 
   @Get('peek')
   async peek(@Req() req: Request): Promise<any> {
-    return await this.client.peek();
+    return await this.client.peek() || [];
   }
 
   @Get('/')
