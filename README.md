@@ -4,6 +4,10 @@ rest api for [avatarbox.io](https://avatarbox.io)
 
 ---
 
+If you are just getting started, be sure to see the [Wiki](https://github.com/mrtillman/avatarbox.api/wiki) and [API docs](https://documenter.getpostman.com/view/1403721/TWDdkuF2).
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/62ef313ed771a3e49e71)
+
 ## Checklist
 
 - IAM Role: `APIBackendRole`
