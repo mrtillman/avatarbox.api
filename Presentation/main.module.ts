@@ -5,11 +5,12 @@ import { GravatarModule } from './gravatar/gravatar.module';
 import { GravatarMiddleware } from './gravatar/gravatar.middleware';
 import { JwtMiddleware } from './jwt.middleware';
 import { route } from './main.controller';
+import { AvbxGravatarClient } from 'avatarbox.sdk';
 
 @Module({
   imports: [GravatarModule],
   controllers: [MainController],
-  providers: [],
+  providers: [AvbxGravatarClient],
 })
 export class MainModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

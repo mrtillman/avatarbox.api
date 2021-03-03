@@ -12,37 +12,33 @@ export const route = {
 
 @Controller()
 export class MainController {
-  public client: AvbxGravatarClient;
-
-  constructor() {
-    this.client = new AvbxGravatarClient();
-  }
+  constructor(private _client: AvbxGravatarClient) { }
   
   @Post('on')
   async on(@Req() req: Request): Promise<any> {
     const client = req.raw.gravatar as GravatarClient;
-    return await this.client.on(client.email);
+    return await this._client.on(client.email);
   }
 
   @Post('off')
   async off(@Req() req: Request): Promise<any> {
     const client = req.raw.gravatar as GravatarClient;
-    return await this.client.off(client.email);
+    return await this._client.off(client.email);
   }
 
   @Get('collect')
   async collect(): Promise<any> {
-    return await this.client.collect() || [];
+    return await this._client.collect() || [];
   }
 
   @Get('dig')
   async dig(@Req() req: Request): Promise<any> {
-    return await this.client.dig() || [];
+    return await this._client.dig() || [];
   }
 
   @Get('peek')
   async peek(@Req() req: Request): Promise<any> {
-    return await this.client.peek() || [];
+    return await this._client.peek() || [];
   }
 
   @Get('/')
