@@ -16,7 +16,7 @@ export const route = {
 
 @Controller('gravatar')
 export class GravatarController extends BaseController {
-  constructor() {
+  constructor(private _imageProcessorFactory: ImageProcessorFactory) {
     super();
   }
 
@@ -66,7 +66,7 @@ export class GravatarController extends BaseController {
 
   @Post('/images')
   async postImages(@Req() req: Request, @Res() res: Response): Promise<any> {
-    const factory = new ImageProcessorFactory();
+    const factory = this._imageProcessorFactory;
     let processor: ImageProcessor;
 
     if (req.body && req.body.imageUrl) {
