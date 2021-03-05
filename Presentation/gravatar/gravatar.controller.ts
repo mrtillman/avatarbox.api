@@ -23,7 +23,13 @@ export class GravatarController extends BaseController {
   @Delete('/')
   removePrimaryImage(@Req() req: Request, @Res() res: Response){
     const client = req.raw.gravatar as GravatarClient;
-    client.removeImage()
+    let promise: Promise<any>;
+    if(req.body && req.body.addresses && req.body.addresses.length){
+      promise = client.removeImage(...req.body.addresses);
+    } else {
+      promise = client.removeImage();
+    }
+    promise
       .then(result => res.send({ success: result.success }))
       .catch((err) => res.status(400).send(err.message));
   }
@@ -50,11 +56,18 @@ export class GravatarController extends BaseController {
     return result.userAddresses;
   }
 
-  @Get('/exists')
-  async exists(@Req() req: Request): Promise<any> {
+  @Post('/exists')
+  async exists(@Req() req: Request, @Res() res: Response): Promise<any> {
     const client = req.raw.gravatar as GravatarClient;
-    const result = await client.exists();
-    return { success: result.success };
+    let promise: Promise<any>;
+    if(req.body && req.body.addresses && req.body.addresses.length){
+      promise = client.exists(...req.body.addresses);
+    } else {
+      promise = client.exists();
+    }
+    promise
+      .then(result => res.send({ success: result.success }))
+      .catch((err) => res.status(400).send(err.message));
   }
 
   @Get('/images')

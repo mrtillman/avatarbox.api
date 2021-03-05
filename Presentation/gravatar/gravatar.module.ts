@@ -16,7 +16,7 @@ export class GravatarModule implements NestModule {
     const routes = [
       { path: route.addresses, method: RequestMethod.GET },
       { path: route.test, method: RequestMethod.GET },
-      { path: route.exists, method: RequestMethod.GET },
+      { path: route.exists, method: RequestMethod.POST },
       { path: route.images, method: RequestMethod.GET },
       { path: route.images, method: RequestMethod.POST },
       { path: `${route.root}/:imageName`, method: RequestMethod.PUT },
