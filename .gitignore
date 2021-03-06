@@ -1,7 +1,5 @@
 uploads
 
-.travis.yml
-
 # Logs
 logs
 *.log
