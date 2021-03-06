@@ -18,6 +18,6 @@ module.exports = {
     "node_modules",
     "Release"
   ],
-  "coverageDirectory": "../coverage",
+  "coverageDirectory": "./coverage",
   "testEnvironment": "node"
 }
