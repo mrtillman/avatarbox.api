@@ -21,31 +21,31 @@ export class GravatarController extends BaseController {
   }
 
   @Delete('/')
-  removePrimaryImage(@Req() req: Request, @Res() res: Response){
+  removePrimaryImage(@Req() req: Request, @Res() res: Response) {
     const client = req.raw.gravatar as GravatarClient;
     let promise: Promise<any>;
-    if(req.body && req.body.addresses && req.body.addresses.length){
+    if (req.body && req.body.addresses && req.body.addresses.length) {
       promise = client.removeImage(...req.body.addresses);
     } else {
       promise = client.removeImage();
     }
     promise
-      .then(result => res.send({ success: result.success }))
+      .then((result) => res.send({ success: result.success }))
       .catch((err) => res.status(400).send(err.message));
   }
 
   @Put('/:imageName')
-  setPrimaryImage(@Req() req: Request, @Res() res: Response){
+  setPrimaryImage(@Req() req: Request, @Res() res: Response) {
     const { imageName } = req.params;
     const client = req.raw.gravatar as GravatarClient;
     let promise: Promise<any>;
-    if(req.body && req.body.addresses && req.body.addresses.length){
+    if (req.body && req.body.addresses && req.body.addresses.length) {
       promise = client.useUserImage(imageName, ...req.body.addresses);
     } else {
       promise = client.useUserImage(imageName);
     }
     promise
-      .then(result => res.send({ success: result.success }))
+      .then((result) => res.send({ success: result.success }))
       .catch((err) => res.status(400).send(err.message));
   }
 
@@ -60,13 +60,13 @@ export class GravatarController extends BaseController {
   async exists(@Req() req: Request, @Res() res: Response): Promise<any> {
     const client = req.raw.gravatar as GravatarClient;
     let promise: Promise<any>;
-    if(req.body && req.body.addresses && req.body.addresses.length){
+    if (req.body && req.body.addresses && req.body.addresses.length) {
       promise = client.exists(...req.body.addresses);
     } else {
       promise = client.exists();
     }
     promise
-      .then(result => res.send({ success: result.success }))
+      .then((result) => res.send({ success: result.success }))
       .catch((err) => res.status(400).send(err.message));
   }
 
@@ -104,11 +104,12 @@ export class GravatarController extends BaseController {
   }
 
   @Delete('/images/:imageName')
-  deleteImage(@Req() req: Request, @Res() res: Response){
+  deleteImage(@Req() req: Request, @Res() res: Response) {
     const { imageName } = req.params;
     const client = req.raw.gravatar as GravatarClient;
-    client.deleteUserImage(imageName)
-      .then(result => res.send({ success: result.success }))
+    client
+      .deleteUserImage(imageName)
+      .then((result) => res.send({ success: result.success }))
       .catch((err) => res.status(400).send(err.message));
   }
 

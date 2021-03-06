@@ -1,4 +1,4 @@
-import { GravatarClient, ImageRating } from "avatarbox.sdk";
+import { GravatarClient, ImageRating } from 'avatarbox.sdk';
 
 export interface ImageProcessor {
   imageRating: ImageRating;

@@ -12,8 +12,8 @@ export const route = {
 
 @Controller()
 export class MainController {
-  constructor(private _client: AvbxGravatarClient) { }
-  
+  constructor(private _client: AvbxGravatarClient) {}
+
   @Post('on')
   async on(@Req() req: Request): Promise<any> {
     const client = req.raw.gravatar as GravatarClient;
@@ -28,17 +28,17 @@ export class MainController {
 
   @Get('collect')
   async collect(): Promise<any> {
-    return await this._client.collect() || [];
+    return (await this._client.collect()) || [];
   }
 
   @Get('dig')
   async dig(@Req() req: Request): Promise<any> {
-    return await this._client.dig() || [];
+    return (await this._client.dig()) || [];
   }
 
   @Get('peek')
   async peek(@Req() req: Request): Promise<any> {
-    return await this._client.peek() || [];
+    return (await this._client.peek()) || [];
   }
 
   @Get('/')
