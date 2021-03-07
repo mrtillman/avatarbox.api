@@ -1,11 +1,21 @@
 import { GravatarController } from './gravatar.controller';
+import { Test } from '@nestjs/testing';
+import { ImageProcessorFactory } from '../../Common/image-processor-factory';
 
 describe('GravatarController', () => {
-  let gravatarController: GravatarController;
+  let controller: GravatarController;
+
+  beforeEach(async () => {
+    const moduleRef = await Test.createTestingModule({
+      controllers: [GravatarController],
+      providers: [ImageProcessorFactory],
+    }).compile();
+    controller = moduleRef.get<GravatarController>(GravatarController);
+  })
 
   describe('root', () => {
     it('should work', () => {
-      expect(true).toBe(true);
+      expect(controller.addresses).toBeDefined();
     });
   });
 });
