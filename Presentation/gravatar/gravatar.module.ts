@@ -4,7 +4,7 @@ import { GravatarController } from './gravatar.controller';
 import { GravatarMiddleware } from './gravatar.middleware';
 import { JwtMiddleware } from '../jwt.middleware';
 import { route } from './gravatar.controller';
-import { ImageProcessorFactory } from 'Common/image-processor-factory';
+import { ImageProcessorFactory } from '../../Common/image-processor-factory';
 
 @Module({
   imports: [],

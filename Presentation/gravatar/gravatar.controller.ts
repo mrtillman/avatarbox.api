@@ -1,7 +1,7 @@
 import { Controller, Delete, Put, Get, Post, Req, Res } from '@nestjs/common';
 import { GravatarClient } from 'avatarbox.sdk';
-import { ImageProcessor } from 'Common/image-processor';
-import { ImageProcessorFactory } from 'Common/image-processor-factory';
+import { ImageProcessor } from '../../Common/image-processor';
+import { ImageProcessorFactory } from '../../Common/image-processor-factory';
 import { Request, Response } from 'express';
 import { ValueRange } from '../../Common/value-range';
 import { BaseController } from '../base.controller';
