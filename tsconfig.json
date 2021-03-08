@@ -10,6 +10,10 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./Release",
-    "incremental": true
+    "incremental": true,
+    "types": [
+      "node",
+      "jest"
+    ]
   }
 }
