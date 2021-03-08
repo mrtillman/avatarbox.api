@@ -32,17 +32,17 @@ export class MainController {
   }
 
   @Get('dig')
-  async dig(@Req() req: Request): Promise<any> {
+  async dig(): Promise<any> {
     return (await this._client.dig()) || [];
   }
 
   @Get('peek')
-  async peek(@Req() req: Request): Promise<any> {
+  async peek(): Promise<any> {
     return (await this._client.peek()) || [];
   }
 
   @Get('/')
-  getHome(@Req() req: Request): string {
+  getHome(): string {
     return 'let there be light';
   }
 }

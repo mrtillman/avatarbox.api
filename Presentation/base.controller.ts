@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { v4 as guid } from 'uuid';
 
 @Controller()
