@@ -2,8 +2,11 @@ import { GravatarController } from './gravatar.controller';
 import { Test } from '@nestjs/testing';
 import { ImageProcessorFactory } from '../../Common/image-processor-factory';
 
+const imageName = 'test-image';
+const addresses = ['user1@example.com', 'user2@example.com'];
 const mockGravatarClient = () => ({
   removeImage: jest.fn(),
+  useUserImage: jest.fn(),
 });
 const mockRequest = (body = {}) => {
   return {
@@ -44,9 +47,7 @@ describe('GravatarController', () => {
       expect(removeImage.mock.calls[0]).toEqual([]);
     });
     it('should remove primary image for multiple email addresses', () => {
-      const req = mockRequest({
-        addresses: ['user1@example.com', 'user2@example.com'],
-      });
+      const req = mockRequest({ addresses });
       const { removeImage } = req.raw.gravatar;
       removeImage.mockReturnValue(
         new Promise((resolve) => resolve({ success: true })),
@@ -69,6 +70,36 @@ describe('GravatarController', () => {
 
       expect(res.status.mock.calls[0][0]).toBe(400);
       expect(res.send.mock.calls[0][0]).toBe(message);
+    });
+  });
+
+  describe('setPrimaryImage', () => {
+    it('should set primary image', async () => {
+      const req = mockRequest();
+      req.params = { imageName };
+      const { useUserImage } = req.raw.gravatar;
+      useUserImage.mockReturnValue(
+        new Promise((resolve) => resolve({ success: true })),
+      );
+
+      controller.setPrimaryImage(req, mockResponse());
+
+      expect(useUserImage.mock.calls[0]).toEqual([req.params.imageName]);
+    });
+    it('should set primary image for multiple email addresses', async () => {
+      const req = mockRequest({ addresses });
+      req.params = { imageName };
+      const { useUserImage } = req.raw.gravatar;
+      useUserImage.mockReturnValue(
+        new Promise((resolve) => resolve({ success: true })),
+      );
+
+      controller.setPrimaryImage(req, mockResponse());
+
+      expect(useUserImage.mock.calls[0]).toEqual([
+        req.params.imageName,
+        ...addresses,
+      ]);
     });
   });
 });
