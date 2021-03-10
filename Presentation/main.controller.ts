@@ -8,6 +8,7 @@ export const route = {
   on: 'on',
   off: 'off',
   peek: 'peek',
+  isactive: 'isactive'
 };
 
 @Controller()
@@ -39,6 +40,12 @@ export class MainController {
   @Get('peek')
   async peek(): Promise<any> {
     return (await this._client.peek()) || [];
+  }
+
+  @Get('isactive')
+  async isActive(@Req() req: Request): Promise<any> {
+    const client = req.raw.gravatar as GravatarClient;
+    return (await this._client.isActive(client.email));
   }
 
   @Get('/')

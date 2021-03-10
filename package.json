@@ -29,7 +29,7 @@
     "@types/bcrypt": "^3.0.0",
     "@types/mysql": "^2.15.18",
     "@types/node": "^13.13.45",
-    "avatarbox.sdk": "0.0.4",
+    "avatarbox.sdk": "0.0.6",
     "express-jwt": "^6.0.0",
     "fastify-file-upload": "^3.0.0",
     "grav.client": "^2.4.20",

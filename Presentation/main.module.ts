@@ -18,6 +18,7 @@ export class MainModule implements NestModule {
       { path: route.collect, method: RequestMethod.GET },
       { path: route.dig, method: RequestMethod.GET },
       { path: route.peek, method: RequestMethod.GET },
+      { path: route.isactive, method: RequestMethod.GET },
       { path: route.on, method: RequestMethod.POST },
       { path: route.off, method: RequestMethod.POST },
     ];
@@ -25,6 +26,10 @@ export class MainModule implements NestModule {
       .apply(JwtMiddleware)
       .forRoutes(...routes)
       .apply(GravatarMiddleware)
-      .forRoutes(route.on, route.off);
+      .forRoutes(
+        route.on, 
+        route.off,
+        route.isactive
+      );
   }
 }
