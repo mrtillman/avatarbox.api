@@ -8,7 +8,7 @@ export const route = {
   on: 'on',
   off: 'off',
   peek: 'peek',
-  isactive: 'isactive'
+  isactive: 'isactive',
 };
 
 @Controller()
@@ -45,7 +45,7 @@ export class MainController {
   @Get('isactive')
   async isActive(@Req() req: Request): Promise<any> {
     const client = req.raw.gravatar as GravatarClient;
-    return (await this._client.isActive(client.email));
+    return await this._client.isActive(client.email);
   }
 
   @Get('/')

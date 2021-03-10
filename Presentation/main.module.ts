@@ -26,10 +26,6 @@ export class MainModule implements NestModule {
       .apply(JwtMiddleware)
       .forRoutes(...routes)
       .apply(GravatarMiddleware)
-      .forRoutes(
-        route.on, 
-        route.off,
-        route.isactive
-      );
+      .forRoutes(route.on, route.off, route.isactive);
   }
 }
