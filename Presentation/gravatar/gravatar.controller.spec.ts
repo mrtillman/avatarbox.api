@@ -33,7 +33,9 @@ describe('GravatarController', () => {
     }).compile();
     controller = module.get<GravatarController>(GravatarController);
   });
-
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   describe('removePrimaryImage', () => {
     it('should remove primary image', () => {
       const req = mockRequest();
@@ -86,7 +88,7 @@ describe('GravatarController', () => {
 
       expect(useUserImage.mock.calls[0]).toEqual([req.params.imageName]);
     });
-    it('should set primary image for multiple email addresses', async () => {
+    it('should set primary image for multiple email addresses', () => {
       const req = mockRequest({ addresses });
       req.params = { imageName };
       const { useUserImage } = req.raw.gravatar;
@@ -100,6 +102,21 @@ describe('GravatarController', () => {
         req.params.imageName,
         ...addresses,
       ]);
+    });
+    it('should send message on 400 error', async () => {
+      const req = mockRequest();
+      req.params = { imageName };
+      const res = mockResponse();
+      const message = 'this is a test';
+      req.raw.gravatar.useUserImage = () =>
+        new Promise(() => {
+          throw { message };
+        });
+
+      await controller.setPrimaryImage(req, res);
+
+      expect(res.status.mock.calls[0][0]).toBe(400);
+      expect(res.send.mock.calls[0][0]).toBe(message);
     });
   });
 });

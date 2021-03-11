@@ -44,7 +44,7 @@ export class GravatarController extends BaseController {
     } else {
       promise = client.useUserImage(imageName);
     }
-    promise
+    return promise
       .then((result) => res.send({ success: result.success }))
       .catch((err) => res.status(400).send(err.message));
   }
