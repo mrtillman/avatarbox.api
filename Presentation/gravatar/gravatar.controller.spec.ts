@@ -2,11 +2,14 @@ import { GravatarController } from './gravatar.controller';
 import { Test } from '@nestjs/testing';
 import { ImageProcessorFactory } from '../../Common/image-processor-factory';
 
+const message = 'this is a test';
 const imageName = 'test-image';
 const addresses = ['user1@example.com', 'user2@example.com'];
 const mockGravatarClient = () => ({
   removeImage: jest.fn(),
   useUserImage: jest.fn(),
+  addresses: jest.fn(),
+  exists: jest.fn(),
 });
 const mockRequest = (body = {}) => {
   return {
@@ -62,7 +65,6 @@ describe('GravatarController', () => {
     it('should send message on 400 error', async () => {
       const req = mockRequest();
       const res = mockResponse();
-      const message = 'this is a test';
       req.raw.gravatar.removeImage = () =>
         new Promise(() => {
           throw { message };
@@ -73,6 +75,17 @@ describe('GravatarController', () => {
       expect(res.status.mock.calls[0][0]).toBe(400);
       expect(res.send.mock.calls[0][0]).toBe(message);
     });
+    it('should get addresses', async () => {
+      const req = mockRequest();
+      const { gravatar } = req.raw;
+      const addresses = gravatar.addresses as jest.Mock;
+
+      addresses.mockReturnValue({ userAddresses: true });
+
+      const result = await controller.addresses(req);
+
+      expect(result).toBeDefined();
+    })
   });
 
   describe('setPrimaryImage', () => {
@@ -107,7 +120,6 @@ describe('GravatarController', () => {
       const req = mockRequest();
       req.params = { imageName };
       const res = mockResponse();
-      const message = 'this is a test';
       req.raw.gravatar.useUserImage = () =>
         new Promise(() => {
           throw { message };
@@ -119,4 +131,42 @@ describe('GravatarController', () => {
       expect(res.send.mock.calls[0][0]).toBe(message);
     });
   });
+
+  describe('exists', () => {
+    it('should check if primary image exists', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+      const exists = req.raw.gravatar.exists as jest.Mock;
+      const send = res.send as jest.Mock;
+      exists.mockReturnValue(new Promise(resolve => resolve({ success: true })));
+
+      await controller.exists(req, res);
+
+      expect(send.mock.calls[0][0]).toEqual({ success: true });
+    });
+    it('should check if primary image exists for multiple email addresses', async () => {
+      const req = mockRequest({ addresses });
+      const res = mockResponse();
+      const exists = req.raw.gravatar.exists as jest.Mock;
+      exists.mockReturnValue(new Promise(resolve => resolve({ success: true })));
+
+      await controller.exists(req, res);
+
+      expect(exists.mock.calls[0]).toEqual(addresses);
+    });
+    it('should send message on 400 error', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+      
+      req.raw.gravatar.exists = () =>
+        new Promise(() => {
+          throw { message };
+        });
+
+      await controller.exists(req, res);
+
+      expect(res.status.mock.calls[0][0]).toBe(400);
+      expect(res.send.mock.calls[0][0]).toBe(message);
+    });
+  })
 });
