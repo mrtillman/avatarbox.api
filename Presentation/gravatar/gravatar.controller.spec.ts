@@ -10,6 +10,8 @@ const mockGravatarClient = () => ({
   useUserImage: jest.fn(),
   addresses: jest.fn(),
   exists: jest.fn(),
+  userImages: jest.fn(),
+  test: jest.fn(),
 });
 const mockRequest = (body = {}) => {
   return {
@@ -39,6 +41,26 @@ describe('GravatarController', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+  it('should get images', async () => {
+    const userImages = ["image1", "image2"];
+    const req = mockRequest();
+    const userImagesMethod = req.raw.gravatar.userImages as jest.Mock;
+    userImagesMethod.mockReturnValue({ userImages });
+
+    const result = await controller.getImages(req);
+
+    expect(result).toEqual(userImages);
+  })
+  it('should support test method', async () => {
+    const req = mockRequest();
+    const response = 123;
+    const test = req.raw.gravatar.test as jest.Mock;
+    test.mockReturnValue({ response });
+
+    const result = await controller.test(req);
+
+    expect(result).toEqual(response);
+  })
   describe('removePrimaryImage', () => {
     it('should remove primary image', () => {
       const req = mockRequest();

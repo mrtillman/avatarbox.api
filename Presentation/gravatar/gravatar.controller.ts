@@ -117,6 +117,6 @@ export class GravatarController extends BaseController {
   async test(@Req() req: Request): Promise<any> {
     const client = req.raw.gravatar as GravatarClient;
     const result = await client.test();
-    return { response: result.response };
+    return result.response;
   }
 }
