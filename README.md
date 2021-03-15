@@ -54,6 +54,10 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Usage
+
+Open http://localhost:8081 to view it in the browser.
+
 ## License
 
 [MIT](https://github.com/mrtillman/avatarbox.api/blob/main/LICENSE)

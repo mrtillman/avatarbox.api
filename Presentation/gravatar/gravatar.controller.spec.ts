@@ -42,7 +42,7 @@ describe('GravatarController', () => {
     jest.clearAllMocks();
   });
   it('should get images', async () => {
-    const userImages = ["image1", "image2"];
+    const userImages = ['image1', 'image2'];
     const req = mockRequest();
     const userImagesMethod = req.raw.gravatar.userImages as jest.Mock;
     userImagesMethod.mockReturnValue({ userImages });
@@ -50,7 +50,7 @@ describe('GravatarController', () => {
     const result = await controller.getImages(req);
 
     expect(result).toEqual(userImages);
-  })
+  });
   it('should support test method', async () => {
     const req = mockRequest();
     const response = 123;
@@ -60,7 +60,7 @@ describe('GravatarController', () => {
     const result = await controller.test(req);
 
     expect(result).toEqual(response);
-  })
+  });
   describe('removePrimaryImage', () => {
     it('should remove primary image', () => {
       const req = mockRequest();
@@ -107,7 +107,7 @@ describe('GravatarController', () => {
       const result = await controller.addresses(req);
 
       expect(result).toBeDefined();
-    })
+    });
   });
 
   describe('setPrimaryImage', () => {
@@ -160,7 +160,9 @@ describe('GravatarController', () => {
       const res = mockResponse();
       const exists = req.raw.gravatar.exists as jest.Mock;
       const send = res.send as jest.Mock;
-      exists.mockReturnValue(new Promise(resolve => resolve({ success: true })));
+      exists.mockReturnValue(
+        new Promise((resolve) => resolve({ success: true })),
+      );
 
       await controller.exists(req, res);
 
@@ -170,7 +172,9 @@ describe('GravatarController', () => {
       const req = mockRequest({ addresses });
       const res = mockResponse();
       const exists = req.raw.gravatar.exists as jest.Mock;
-      exists.mockReturnValue(new Promise(resolve => resolve({ success: true })));
+      exists.mockReturnValue(
+        new Promise((resolve) => resolve({ success: true })),
+      );
 
       await controller.exists(req, res);
 
@@ -179,7 +183,7 @@ describe('GravatarController', () => {
     it('should send message on 400 error', async () => {
       const req = mockRequest();
       const res = mockResponse();
-      
+
       req.raw.gravatar.exists = () =>
         new Promise(() => {
           throw { message };
@@ -190,5 +194,5 @@ describe('GravatarController', () => {
       expect(res.status.mock.calls[0][0]).toBe(400);
       expect(res.send.mock.calls[0][0]).toBe(message);
     });
-  })
+  });
 });
