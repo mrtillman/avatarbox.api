@@ -17,10 +17,10 @@ If you are just getting started, be sure to see the [Wiki](https://github.com/mr
 
 ## Checklist
 
-- IAM Role: `APIBackendRole`
+- IAM Role: `AvbxApiServer`
   - AmazonDynamoDBFullAccess
 - KMS Symmetric Key
-  - add `APIBackendRole` as a Key user
+  - add `AvbxApiServer` as a key user
 
 ## Installation
 
