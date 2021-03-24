@@ -7,6 +7,7 @@ const imageName = 'test-image';
 const addresses = ['user1@example.com', 'user2@example.com'];
 const mockGravatarClient = () => ({
   removeImage: jest.fn(),
+  deleteUserImage: jest.fn(),
   useUserImage: jest.fn(),
   addresses: jest.fn(),
   exists: jest.fn(),
@@ -101,7 +102,6 @@ describe('GravatarController', () => {
       const req = mockRequest();
       const { gravatar } = req.raw;
       const addresses = gravatar.addresses as jest.Mock;
-
       addresses.mockReturnValue({ userAddresses: true });
 
       const result = await controller.addresses(req);
@@ -109,7 +109,36 @@ describe('GravatarController', () => {
       expect(result).toBeDefined();
     });
   });
+  describe('deleteImage', () => {
+    it('should delete user image', () => {
+      const req = mockRequest();
+      req.params = { imageName };
+      const { gravatar } = req.raw;
+      const deleteUserImage = gravatar.deleteUserImage as jest.Mock;
+      deleteUserImage.mockReturnValue(
+        new Promise((resolve) => resolve({ success: true })),
+      );
 
+      controller.deleteImage(req, mockResponse());
+
+      expect(deleteUserImage.mock.calls[0][0]).toBe(imageName);
+    })
+    it('should send message on 400 error', async () => {
+      const req = mockRequest();
+      req.params = { imageName };
+      const res = mockResponse();
+      req.raw.gravatar.deleteUserImage = null;
+      req.raw.gravatar.deleteUserImage = () =>
+        new Promise(() => {
+          throw { message };
+        });
+
+      await controller.deleteImage(req, res);
+      
+      expect(res.status.mock.calls[0][0]).toBe(400);
+      expect(res.send.mock.calls[0][0]).toBe(message);
+    });
+  })
   describe('setPrimaryImage', () => {
     it('should set primary image', async () => {
       const req = mockRequest();

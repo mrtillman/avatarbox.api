@@ -107,7 +107,7 @@ export class GravatarController extends BaseController {
   deleteImage(@Req() req: Request, @Res() res: Response) {
     const { imageName } = req.params;
     const client = req.raw.gravatar as GravatarClient;
-    client
+    return client
       .deleteUserImage(imageName)
       .then((result) => res.send({ success: result.success }))
       .catch((err) => res.status(400).send(err.message));
