@@ -6,6 +6,7 @@ rest api for [avatarbox.io](https://avatarbox.io)
 
 [![Build Status](https://travis-ci.com/mrtillman/avatarbox.api.svg?branch=master)](https://travis-ci.com/mrtillman/avatarbox.api)
 [![Coverage Status](https://coveralls.io/repos/github/mrtillman/avatarbox.api/badge.svg?branch=master)](https://coveralls.io/github/mrtillman/avatarbox.api?branch=master)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/mrtillman/avatarbox.api/blob/main/LICENSE)
 
 ## Getting Started
 
