@@ -48,6 +48,11 @@ export class MainController {
     return await this._client.isActive(client.email);
   }
 
+  @Get('health')
+  getHealth(): string {
+    return;
+  }
+
   @Get('/')
   getHome(): string {
     return 'let there be light';
