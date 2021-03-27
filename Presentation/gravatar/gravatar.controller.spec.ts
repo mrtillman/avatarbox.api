@@ -4,6 +4,10 @@ import { ImageProcessorFactory } from '../../Common/image-processor-factory';
 
 const message = 'this is a test';
 const imageName = 'test-image';
+const imageFilePath = 'image-file-path';
+const imageUrl = 'image-url';
+const imageData = 'image-data';
+const imageRating = 0;
 const addresses = ['user1@example.com', 'user2@example.com'];
 const mockGravatarClient = () => ({
   removeImage: jest.fn(),
@@ -13,6 +17,9 @@ const mockGravatarClient = () => ({
   exists: jest.fn(),
   userImages: jest.fn(),
   test: jest.fn(),
+  saveEncodedImage: jest.fn(),
+  saveImage: jest.fn(),
+  saveImageUrl: jest.fn()
 });
 const mockRequest = (body = {}) => {
   return {
@@ -109,6 +116,60 @@ describe('GravatarController', () => {
       expect(result).toBeDefined();
     });
   });
+  describe('postImages', () => {
+    it('should upload image url', async () => {
+      const req = mockRequest({ imageUrl, imageRating });
+      const res = mockResponse();
+      const processor = { process: jest.fn() };
+      processor.process.mockReturnValue(
+        new Promise((resolve) => resolve(imageName)),
+      );
+      jest.spyOn(controller.imageProcessorFactory, 'createUrlProcessor')
+          .mockImplementation(() => processor as any);
+      const createUrlProcessorSpy = jest.spyOn(controller.imageProcessorFactory, 'createUrlProcessor');
+      await controller.postImages(req, res);
+      expect(createUrlProcessorSpy.mock.calls.length).toBe(1);
+      expect(res.send.mock.calls[0][0]).toEqual({ imageName });
+    })
+    it('should upload image data', async () => {
+      const req = mockRequest({ imageData, imageRating });
+      const res = mockResponse();
+      const processor = { process: jest.fn() };
+      processor.process.mockReturnValue(
+        new Promise((resolve) => resolve(imageName)),
+      );
+      jest.spyOn(controller.imageProcessorFactory, 'createDataProcessor')
+          .mockImplementation(() => processor as any);
+      const createDataProcessorSpy = jest.spyOn(controller.imageProcessorFactory, 'createDataProcessor');
+      await controller.postImages(req, res);
+      expect(createDataProcessorSpy.mock.calls.length).toBe(1);
+      expect(res.send.mock.calls[0][0]).toEqual({ imageName });
+    })
+    it('should upload image file', async () => {
+      const req = mockRequest({ imageRating });
+      req.raw.files = { 
+        "fake.jpg": {
+          "name": "fake.jpg",
+          "mimetype": "image/jpeg"
+        }
+      };
+      const res = mockResponse();
+      const processor = { process: jest.fn() };
+      processor.process.mockReturnValue(
+        new Promise((resolve) => resolve(imageName)),
+      );
+      jest.spyOn(controller.imageProcessorFactory, 'createFileProcessor')
+          .mockImplementation(() => processor as any);
+      const createFileProcessorSpy = jest.spyOn(controller.imageProcessorFactory, 'createFileProcessor');
+      jest.spyOn(controller, 'UploadFile')
+          .mockImplementation(() => (
+            new Promise(resolve => resolve(imageFilePath))
+          ));
+      await controller.postImages(req, res);
+      expect(createFileProcessorSpy.mock.calls.length).toBe(1);
+      expect(res.send.mock.calls[0][0]).toEqual({ imageName });
+    })
+  })
   describe('deleteImage', () => {
     it('should delete user image', () => {
       const req = mockRequest();

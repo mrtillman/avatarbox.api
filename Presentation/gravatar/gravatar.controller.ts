@@ -16,7 +16,7 @@ export const route = {
 
 @Controller('gravatar')
 export class GravatarController extends BaseController {
-  constructor(private _imageProcessorFactory: ImageProcessorFactory) {
+  constructor(public imageProcessorFactory: ImageProcessorFactory) {
     super();
   }
 
@@ -79,7 +79,7 @@ export class GravatarController extends BaseController {
 
   @Post('/images')
   async postImages(@Req() req: Request, @Res() res: Response): Promise<any> {
-    const factory = this._imageProcessorFactory;
+    const factory = this.imageProcessorFactory;
     let processor: ImageProcessor;
 
     if (req.body && req.body.imageUrl) {
@@ -87,7 +87,7 @@ export class GravatarController extends BaseController {
     } else if (req.body && req.body.imageData) {
       processor = factory.createDataProcessor(req.body.imageData);
     } else if (req.raw.files) {
-      const imageFilePath = await this.uploadFile(req.raw.files);
+      const imageFilePath = await this.UploadFile(req.raw.files);
       processor = factory.createFileProcessor(imageFilePath);
     } else {
       return res.status(204).send();
@@ -97,7 +97,7 @@ export class GravatarController extends BaseController {
     processor.imageRating = imageRating.value;
     processor.client = req.raw.gravatar as GravatarClient;
 
-    processor
+    return processor
       .process()
       .then((imageName) => res.send({ imageName }))
       .catch((err) => res.status(400).send(err.message));

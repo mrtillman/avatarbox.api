@@ -5,7 +5,7 @@ import { v4 as guid } from 'uuid';
 export class BaseController {
   constructor() {}
 
-  async uploadFile(files: any): Promise<string> {
+  public async UploadFile(files: any): Promise<string> {
     return new Promise((resolve) => {
       for (const key in files) {
         const file = files[key];
