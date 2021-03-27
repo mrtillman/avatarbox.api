@@ -117,7 +117,7 @@ describe('GravatarController', () => {
     });
   });
   describe('postImages', () => {
-    it('should upload image url', async () => {
+    it('should process image url', async () => {
       const req = mockRequest({ imageUrl, imageRating });
       const res = mockResponse();
       const processor = { process: jest.fn() };
@@ -131,7 +131,7 @@ describe('GravatarController', () => {
       expect(createUrlProcessorSpy.mock.calls.length).toBe(1);
       expect(res.send.mock.calls[0][0]).toEqual({ imageName });
     })
-    it('should upload image data', async () => {
+    it('should process image data', async () => {
       const req = mockRequest({ imageData, imageRating });
       const res = mockResponse();
       const processor = { process: jest.fn() };
@@ -145,7 +145,7 @@ describe('GravatarController', () => {
       expect(createDataProcessorSpy.mock.calls.length).toBe(1);
       expect(res.send.mock.calls[0][0]).toEqual({ imageName });
     })
-    it('should upload image file', async () => {
+    it('should process image file', async () => {
       const req = mockRequest({ imageRating });
       req.raw.files = { 
         "fake.jpg": {
@@ -169,6 +169,30 @@ describe('GravatarController', () => {
       expect(createFileProcessorSpy.mock.calls.length).toBe(1);
       expect(res.send.mock.calls[0][0]).toEqual({ imageName });
     })
+    it('should ignore blank upload', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+      await controller.postImages(req,res);
+      expect(res.status.mock.calls[0][0]).toBe(204);
+      expect(res.send.mock.calls.length).toBe(1);
+    })
+    it('should send message on 400 error', async () => {
+      const req = mockRequest({ imageUrl, imageRating });
+      const res = mockResponse();
+      const processor = { process: jest.fn() };
+      processor.process.mockReturnValue(
+        new Promise(() => {
+          throw { message };
+        })
+      );
+      jest.spyOn(controller.imageProcessorFactory, 'createUrlProcessor')
+          .mockImplementation(() => processor as any);
+
+      await controller.postImages(req, res);
+
+      expect(res.status.mock.calls[0][0]).toBe(400);
+      expect(res.send.mock.calls[0][0]).toBe(message);
+    });
   })
   describe('deleteImage', () => {
     it('should delete user image', () => {
