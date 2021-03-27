@@ -22,6 +22,7 @@ export class GravatarModule implements NestModule {
       { path: `${route.root}/:imageName`, method: RequestMethod.PUT },
       { path: route.root, method: RequestMethod.DELETE },
       { path: `${route.images}/:imageName`, method: RequestMethod.DELETE },
+      { path: route.images, method: RequestMethod.DELETE },
     ];
     consumer
       .apply(JwtMiddleware)

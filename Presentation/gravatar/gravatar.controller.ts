@@ -113,6 +113,19 @@ export class GravatarController extends BaseController {
       .catch((err) => res.status(400).send(err.message));
   }
 
+  @Delete('/images')
+  async deleteImages(@Req() req: Request, @Res() res: Response) {
+    const { imageNames } = req.body;
+    if(imageNames && Array.isArray(imageNames)){
+      const client = req.raw.gravatar as GravatarClient;
+      return Promise.all(
+        imageNames.map(imageName => client.deleteUserImage(imageName))
+      ).then(() => res.send({ success: true }))
+       .catch((err) => res.status(400).send(err.message));
+    }
+    return res.status(400).send({ message: "imageNames array not found in request body" });
+  }
+
   @Get('/test')
   async test(@Req() req: Request): Promise<any> {
     const client = req.raw.gravatar as GravatarClient;
