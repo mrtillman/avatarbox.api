@@ -4,6 +4,7 @@ import { ImageProcessorFactory } from '../../Common/image-processor-factory';
 
 const message = 'this is a test';
 const imageName = 'test-image';
+const imageNames = ["alpha", "bravo", "charlie"];
 const imageFilePath = 'image-file-path';
 const imageUrl = 'image-url';
 const imageData = 'image-data';
@@ -219,6 +220,49 @@ describe('GravatarController', () => {
         });
 
       await controller.deleteImage(req, res);
+      
+      expect(res.status.mock.calls[0][0]).toBe(400);
+      expect(res.send.mock.calls[0][0]).toBe(message);
+    });
+  })
+  describe('deleteImages', () => {
+    it('should delete multiple user images', () => {
+      const req = mockRequest({ imageNames });
+      const { gravatar } = req.raw;
+      const deleteUserImage = gravatar.deleteUserImage as jest.Mock;
+      deleteUserImage.mockReturnValue(
+        new Promise((resolve) => resolve({ success: true })),
+      );
+
+      controller.deleteImages(req, mockResponse());
+
+      expect(deleteUserImage.mock.calls.length).toBe(3);
+    })
+    it('should error if imageNames is missing', async () => {
+      const req = mockRequest();
+      const res = mockResponse();
+      
+      await controller.deleteImages(req, res);
+      
+      expect(res.status.mock.calls[0][0]).toBe(400);
+    });
+    it('should error if imageNames is not an array', async () => {
+      const req = mockRequest({ imageNames: 1 });
+      const res = mockResponse();
+
+      await controller.deleteImages(req, res);
+      
+      expect(res.status.mock.calls[0][0]).toBe(400);
+    });
+    it('should send message on 400 error', async () => {
+      const req = mockRequest({ imageNames });
+      const res = mockResponse();
+      req.raw.gravatar.deleteUserImage = () =>
+        new Promise(() => {
+          throw { message };
+        });
+
+      await controller.deleteImages(req, res);
       
       expect(res.status.mock.calls[0][0]).toBe(400);
       expect(res.send.mock.calls[0][0]).toBe(message);
